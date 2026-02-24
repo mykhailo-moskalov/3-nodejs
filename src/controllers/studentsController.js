@@ -5,10 +5,28 @@ import { Student } from '../models/student.js';
 
 // / GET
 export const getStudents = async (req, res) => {
-  const students = await Student.find();
+  const { page = 1, perPage = 10 } = req.query;
 
-  res.status(200).json(students);
+  const skip = (page - 1) * perPage;
+
+  const studentsQuery = Student.find();
+
+  const [totalItems, students] = await Promise.all([
+    studentsQuery.clone().countDocuments(),
+    studentsQuery.skip(skip).limit(perPage),
+  ]);
+
+  const totalPages = Math.ceil(totalItems / perPage);
+
+  res.status(200).json({
+    page,
+    perPage,
+    totalItems,
+    totalPages,
+    students,
+  });
 };
+
 // / GET
 export const getStudentById = async (req, res) => {
   const { studentId } = req.params;
