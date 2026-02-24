@@ -1,7 +1,9 @@
 // / Libraries
 import createHttpError from 'http-errors';
 import { Router } from 'express';
-
+import { celebrate } from 'celebrate';
+// / Validdations
+import { createStudentSchema } from '../validations/studentsValidation.js';
 // / Controllers
 import {
   getStudents,
@@ -21,7 +23,7 @@ router.get('/test-error', (req, res) => {
 });
 
 // / POST
-router.post('/students', createStudent);
+router.post('/students', celebrate(createStudentSchema), createStudent);
 
 // / DELETE
 router.delete('/students/:studentId', deleteStudent);
