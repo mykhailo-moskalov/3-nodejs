@@ -3,7 +3,11 @@ import createHttpError from 'http-errors';
 import { Router } from 'express';
 import { celebrate } from 'celebrate';
 // / Validdations
-import { createStudentSchema } from '../validations/studentsValidation.js';
+import {
+  createStudentSchema,
+  studedntIdParamSchema,
+  updateStudentSchema,
+} from '../validations/studentsValidation.js';
 // / Controllers
 import {
   getStudents,
@@ -17,7 +21,11 @@ const router = Router();
 
 // / GET
 router.get('/students', getStudents);
-router.get('/students/:studentId', getStudentById);
+router.get(
+  '/students/:studentId',
+  celebrate(studedntIdParamSchema),
+  getStudentById,
+);
 router.get('/test-error', (req, res) => {
   throw createHttpError('Something went wrong');
 });
@@ -26,9 +34,17 @@ router.get('/test-error', (req, res) => {
 router.post('/students', celebrate(createStudentSchema), createStudent);
 
 // / DELETE
-router.delete('/students/:studentId', deleteStudent);
+router.delete(
+  '/students/:studentId',
+  celebrate(studedntIdParamSchema),
+  deleteStudent,
+);
 
 // / PATCH
-router.patch('/students/:studentId', updateStudent);
+router.patch(
+  '/students/:studentId',
+  celebrate(updateStudentSchema),
+  updateStudent,
+);
 
 export default router;

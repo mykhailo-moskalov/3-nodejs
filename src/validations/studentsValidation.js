@@ -1,4 +1,16 @@
+// / Libraries
 import { Joi, Segments } from 'celebrate';
+import { isValidObjectId } from 'mongoose';
+
+const objectIdValidator = (value, helpers) =>
+  !isValidObjectId(value) ? helpers.message('Invalid id format') : value;
+
+export const studedntIdParamSchema = {
+  [Segments.PARAMS]: Joi.object({
+    studentId: Joi.string().custom(objectIdValidator).required(),
+  }),
+};
+
 export const createStudentSchema = {
   [Segments.BODY]: Joi.object({
     name: Joi.string().min(1).max(30).required().messages({
@@ -27,4 +39,33 @@ export const createStudentSchema = {
       'boolean.base': 'onDuty must be a boolean value',
     }),
   }),
+};
+
+export const updateStudentSchema = {
+  [Segments.PARAMS]: Joi.object({
+    studentId: Joi.string().custom(objectIdValidator).required(),
+  }),
+  [Segments.BODY]: Joi.object({
+    name: Joi.string().min(1).max(30).messages({
+      'string.base': 'Name must be a string',
+      'string.min': 'Name should have at least {#limit} characters',
+      'string.max': 'Name should have at most {#limit} characters',
+    }),
+    age: Joi.number().integer().min(12).max(65).messages({
+      'number.base': 'Age must be a number',
+      'number.min': 'Age must be at least {#limit}',
+      'number.max': 'Age must be at most {#limit}',
+    }),
+    gender: Joi.string().valid('male', 'female', 'other').messages({
+      'any.only': 'Gender must be one of: male, female, or other',
+    }),
+    avgMark: Joi.number().min(2).max(12).messages({
+      'number.base': 'Average mark must be a number',
+      'number.min': 'Average mark must be at least {#limit}',
+      'number.max': 'Average mark must be at most {#limit}',
+    }),
+    onDuty: Joi.boolean().messages({
+      'boolean.base': 'onDuty must be a boolean value',
+    }),
+  }).min(1),
 };

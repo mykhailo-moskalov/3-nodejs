@@ -1,6 +1,5 @@
 // / Libraries
 import createHttpError from 'http-errors';
-// import mongoose from 'mongoose';
 // / Model
 import { Student } from '../models/student.js';
 
@@ -13,10 +12,6 @@ export const getStudents = async (req, res) => {
 // / GET
 export const getStudentById = async (req, res) => {
   const { studentId } = req.params;
-
-  // if (!mongoose.Types.ObjectId.isValid(studentId)) {
-  //   throw createHttpError(404, 'Invalid student ID');
-  // }
 
   const student = await Student.findById(studentId);
 
@@ -38,10 +33,6 @@ export const createStudent = async (req, res) => {
 export const deleteStudent = async (req, res) => {
   const { studentId } = req.params;
 
-  // if (!mongoose.Types.ObjectId.isValid(studentId)) {
-  //   throw createHttpError(404, 'Invalid student ID');
-  // }
-
   const student = await Student.findOneAndDelete({
     _id: studentId,
   });
@@ -56,10 +47,6 @@ export const deleteStudent = async (req, res) => {
 // / PATCH
 export const updateStudent = async (req, res) => {
   const { studentId } = req.params;
-
-  // if (!mongoose.Types.ObjectId.isValid(studentId)) {
-  //   throw createHttpError(404, 'Invalid student ID');
-  // }
 
   const student = await Student.findOneAndUpdate({ _id: studentId }, req.body, {
     new: true,
