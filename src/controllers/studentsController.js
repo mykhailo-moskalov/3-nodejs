@@ -5,18 +5,18 @@ import { Student } from '../models/student.js';
 
 // / GET
 export const getStudents = async (req, res) => {
-  const { page = 1, perPage = 10, gender, minAvgMark } = req.query;
+  const { page = 1, perPage = 10, gender, minAvgMark, search } = req.query;
 
   const skip = (page - 1) * perPage;
 
   const studentsQuery = Student.find();
 
-  if (gender) {
-    studentsQuery.where('gender').equals(gender);
-  }
-  if (minAvgMark) {
-    studentsQuery.where('avgMark').gte(minAvgMark);
-  }
+  if (search) studentsQuery.where({ $text: { $search: search } });
+  // if (search) studentsQuery.where({ name: { $regex: search, $options: 'i' } });
+
+  if (gender) studentsQuery.where('gender').equals(gender);
+
+  if (minAvgMark) studentsQuery.where('avgMark').gte(minAvgMark);
 
   const [totalItems, students] = await Promise.all([
     studentsQuery.clone().countDocuments(),
